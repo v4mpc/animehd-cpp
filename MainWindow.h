@@ -12,7 +12,8 @@ public:
     Gtk::Button *pProperties_button = nullptr;
     Gtk::Button *pPlay_button=nullptr;
     Gtk::Button *pStop_button=nullptr;
-    Gtk::Popover *pAnime_pop_over=nullptr;
+    Gtk::MenuButton *pAnime_pop_over_button=nullptr;
+//    Gtk::Popover *Anime_pop_over= nullptr;
 public:
     MainWindow();
 
@@ -30,7 +31,8 @@ public:
 
     void setup_anime_popover();
 
-    void start();
+    void on_anime_selected(const Glib::ustring& data);
+
 };
 
 
