@@ -3,7 +3,11 @@ project(animehd)
 set(CMAKE_CXX_STANDARD 14)
 find_package(PkgConfig)
 pkg_check_modules(GTKMM gtkmm-3.0)
-add_executable(animehd main.cpp MainWindow.cpp MainWindow.h)
 link_directories(${GTKMM_LIBRARY_DIRS})
 include_directories(${GTKMM_INCLUDE_DIRS})
-target_link_libraries(animehd ${GTKMM_LIBRARIES})
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+add_executable(animehd main.cpp MainWindow.cpp MainWindow.h utils.cpp utils.h)
+target_link_libraries(animehd ${GTKMM_LIBRARIES} ${CONAN_LIBS})
+
+

@@ -1,0 +1,37 @@
+{
+    "download_folder": "/home/v4mpc/Videos/testing",
+    "animes": [
+        {
+            "id": "1",
+            "name": "Boruto_Dub",
+            "url": "https://fb.manga47.net/Boruto_Dub/Boruto_Dub_053.mp4",
+            "start_at": "54"
+        },
+        {
+            "id": "2",
+            "name": "Jujutsu_Kaisen_TV",
+            "url": "https://20.manga47.net/Jujutsu_Kaisen_TV/Jujutsu_Kaisen_TV_001.mp4",
+            "start_at": "25"
+        }
+        ,
+        {
+            "id": "8",
+            "name": "One_Piece_Dub",
+            "url": "https://ot.manga47.net/One_Piece_Dub/001.mp4",
+            "start_at": "283"
+        }
+        ,
+        {
+            "id": "4",
+            "name": "Dr_Stone_Stone_Wars",
+            "url": "https://20.manga47.net/Dr_Stone_Stone_Wars/Dr_Stone_Stone_Wars_Dub_001.mp4",
+            "start_at": "8"
+        },
+        {
+            "id": "5",
+            "name": "Dragon_Ball_Super_Dub",
+            "url": "https://d.manga47.net/Dragon_Ball_Super_Dub/Dragon_Ball_Super_Dub_001.mp4",
+            "start_at": "1"
+        }
+    ]
+}

@@ -1,13 +1,18 @@
 
 #ifndef ANIMEHD_MAINWINDOW_H
 #define ANIMEHD_MAINWINDOW_H
+
 #include <gtkmm.h>
+
 
 class MainWindow {
 public:
     Glib::RefPtr<Gtk::Builder> refBuilder;
-    Gtk::ApplicationWindow *pWindow= nullptr;
-    Gtk::Button *pProperties_button= nullptr;
+    Gtk::ApplicationWindow *pWindow = nullptr;
+    Gtk::Button *pProperties_button = nullptr;
+    Gtk::Button *pPlay_button=nullptr;
+    Gtk::Button *pStop_button=nullptr;
+    Gtk::Popover *pAnime_pop_over=nullptr;
 public:
     MainWindow();
 
@@ -18,6 +23,14 @@ public:
     void on_properties_button_clicked();
 
     void connect_all_signals();
+
+    void on_play_button_clicked();
+
+    void on_stop_button_clicked();
+
+    void setup_anime_popover();
+
+    void start();
 };
 
 
