@@ -7,6 +7,7 @@ class MainWindow {
 public:
     Glib::RefPtr<Gtk::Builder> refBuilder;
     Gtk::ApplicationWindow *pWindow= nullptr;
+    Gtk::Button *pProperties_button= nullptr;
 public:
     MainWindow();
 
@@ -14,6 +15,9 @@ public:
 
     int init(int argc, char **argv);
 
+    void on_properties_button_clicked();
+
+    void connect_all_signals();
 };
 
 
