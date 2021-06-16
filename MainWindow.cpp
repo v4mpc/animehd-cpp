@@ -91,16 +91,11 @@ void MainWindow::setup_anime_popover() {
     refBuilder->get_widget("animes_button", pAnime_pop_over_button);
     pAnime_pop_over_button->set_label("Anime");
     pAnime_pop_over_button->set_popover(*pop_over);
-//    pAnime_pop_over_button->set_active(true);
     std::cout<<"Play stop clicked"<<std::endl;
-
-
-
-
-
 }
 
 void MainWindow::on_anime_selected(const Glib::ustring& data){
     std::cout<<"Anime is "<<data<<std::endl;
 }
+
 
