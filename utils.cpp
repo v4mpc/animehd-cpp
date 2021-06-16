@@ -86,7 +86,6 @@ string generate_episode_name(string &url) {
 //    check if episode name is only numbers
     re1.split(url, 0, vec);
     std::string episode_string = vec[2];
-//    std::cout<<"am here "<<vec[1]<<std::endl;
     Poco::RegularExpression re2(R"(([a-z_0-9]+)(\.mp4))", Poco::RegularExpression::RE_CASELESS);
     std::vector<std::string> vec2;
     re2.split(episode_string, 0, vec2);
@@ -104,11 +103,10 @@ bool is_number(const std::string &s) {
 }
 
 
-int get_remote_size(const string &host,const string &uri) {
+int get_remote_size(const string &host, const string &uri) {
     Net::HTTPSClientSession s(host);
     Net::HTTPRequest request(Net::HTTPRequest::HTTP_HEAD, uri);
-    request.add("User-Agent",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36");
+    request.add("User-Agent", USER_AGENT);
     s.sendRequest(request);
     Net::HTTPResponse response;
     std::istream &rs = s.receiveResponse(response);
@@ -119,7 +117,7 @@ int get_remote_size(const string &host,const string &uri) {
 
 };
 
-std::vector<string> generate_host_uri(string url){
+std::vector<string> generate_host_uri(string url) {
     Poco::RegularExpression re1(R"(https://([a-z.0-9]+)(/.+))", Poco::RegularExpression::RE_CASELESS);
     std::vector<std::string> vec;
     RegularExpression::MatchVec posVec;
@@ -131,13 +129,24 @@ std::vector<string> generate_host_uri(string url){
 
 }
 
-int kb(const int &byt){
+int kb(const int &byt) {
 
-    return (int)(byt/(1024));
+    return (int) (byt / (SIZE_UNIT));
 };
 
-int mb(const int &byt){
+int mb(const int &byt) {
 
-    return (int)(byt/(1024*1024));
+    return (int) (byt / (SIZE_UNIT * SIZE_UNIT));
 };
+
+
+string get_last_episode(const string &path) {
+    Poco::File dir_name{path};
+    std::vector<std::string> vec;
+    dir_name.list(vec);
+    if (vec.size() <= 0)
+        return "0";
+    std::sort(vec.begin(), vec.end());
+    return vec.back();
+}
 

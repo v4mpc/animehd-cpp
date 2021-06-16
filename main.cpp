@@ -5,6 +5,7 @@
 #include <vector>
 #include "Poco/File.h"
 #include "Poco/Path.h"
+#include <algorithm>
 #include "Poco/RegularExpression.h"
 
 #include "utils.h"
@@ -16,9 +17,13 @@ int main(int argc, char *argv[]) {
 
     std::string  url = "https://20.manga47.net/Jujutsu_Kaisen_TV/Jujutsu_Kaisen_TV_001.mp4";
     std::string url2 ="https://ot.manga47.net/One_Piece_Dub/001.mp4";
-    std::vector<string> host= generate_host_uri(url);
-    std::cout<<host[1]<<"==="<<host[2] <<std::endl;
-    std::cout<<get_remote_size(host[1],host[2])<<std::endl;
+
+//    Poco::File dir_name {"/home/v4mpc/Videos/testing/Boruto_Dub"};
+//    std::vector<std::string> vec;
+//    dir_name.list(vec);
+//    std::sort(vec.begin(),vec.end());
+    std::cout<<get_last_episode("/home/v4mpc/Videos/testing/Dragon_Ball_Super_Dub");
+
 
 
 
