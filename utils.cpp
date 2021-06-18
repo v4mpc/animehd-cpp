@@ -8,14 +8,13 @@
 #include <Poco/Net/HTTPSClientSession.h>
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
-#include <Poco/StreamCopier.h>
 #include "Poco/JSON/Object.h"
 #include "Poco/JSON/Array.h"
 #include "Poco/Util/JSONConfiguration.h"
 #include "Poco/JSON/Parser.h"
 #include "Poco/Dynamic/Var.h"
 #include <fstream>
-#include <Poco/JSON/JSONException.h>
+
 
 
 
@@ -168,12 +167,12 @@ void initialize_config(const string &path) {
 //    check if download folder not exit create it
 
     if (!path_exists(config.download_folder)){
-        std::clog<<config.download_folder<<" Does not exist. Creating...";
+        std::clog<<config.download_folder<<" Does not exist. Creating..."<<std::endl;
         create_dir(config.download_folder);
     }
 
     if (!path_exists(path)){
-        std::clog<<path<<" Anime config folder Does not exist. Creating...";
+        std::clog<<path<<" Anime config folder Does not exist. Creating..."<<std::endl;
         create_dir(path);
     }
     auto anime_file_path=Poco::Path(path,"config.json").toString();
