@@ -9,6 +9,11 @@
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
 #include <Poco/StreamCopier.h>
+#include "Poco/JSON/Object.h"
+#include "Poco/JSON/Array.h"
+#include "Poco/Util/JSONConfiguration.h"
+#include "Poco/JSON/Parser.h"
+#include "Poco/Dynamic/Var.h"
 
 using namespace Poco;
 using namespace std;
@@ -148,5 +153,25 @@ string get_last_episode(const string &path) {
         return "0";
     std::sort(vec.begin(), vec.end());
     return vec.back();
+}
+
+void load_config(const string &path, Config &config) {
+    Poco::Util::JSONConfiguration config_file;
+    config_file.load(path);
+    config.download_folder = config_file.getString("download_folder");
+    std::string animes = config_file.getString("animes");
+    Poco::JSON::Parser parser;
+    Poco::Dynamic::Var result = parser.parse(animes);
+    Poco::JSON::Array::Ptr arr = result.extract<Poco::JSON::Array::Ptr>();
+    for (int i = 0; i < arr->size(); ++i) {
+        Poco::JSON::Object::Ptr object = arr->getObject(i);
+        ConfigAnime anime;
+        anime.id = object->get("id").toString();
+        anime.name = object->get("name").toString();
+        anime.url = object->get("url").toString();
+        anime.start_at = object->get("start_at").toString();
+        config.animes.push_back(anime);
+
+    }
 }
 
