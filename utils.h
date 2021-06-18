@@ -9,26 +9,26 @@
 #include <algorithm>
 #include <vector>
 
+#include "Poco/Logger.h"
 
 
 using namespace std;
 using namespace Poco;
 
 
-const int SIZE_UNIT=1024;
-const string USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36";
+const int SIZE_UNIT = 1024;
+const string USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36";
 
-struct ConfigAnime{
+struct ConfigAnime {
     string id;
     string name;
     string url;
     string start_at;
 };
-struct Config{
+struct Config {
     string download_folder;
     vector<ConfigAnime> animes;
 };
-
 
 string convert_to_three_digits(string number);
 
@@ -68,5 +68,11 @@ void initialize_config();
 string to_percentatge(const int &numerator, const int &denominator);
 
 void load_config(const string &path, Config &config);
+
+void save_config(const string &path, Config &config);
+
+void initialize_config(const string &path);
+
+
 
 #endif //ANIMEHD_UTILS_H

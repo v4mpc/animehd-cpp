@@ -14,9 +14,16 @@
 #include "Poco/Util/JSONConfiguration.h"
 #include "Poco/JSON/Parser.h"
 #include "Poco/Dynamic/Var.h"
+#include <fstream>
+#include <Poco/JSON/JSONException.h>
+
+
 
 using namespace Poco;
 using namespace std;
+
+
+
 
 bool path_exists(const string &path) {
     return Glib::file_test(path, Glib::FileTest::FILE_TEST_EXISTS);
@@ -29,10 +36,8 @@ string get_config_path() {
 
 
 string get_anime_path() {
-    Poco::Path anime_path;
-    anime_path.pushDirectory(Poco::Path::configHome());
-    anime_path.pushDirectory("animehd");
-    return anime_path.toString();
+    Poco::Path anime_path{Poco::Path::configHome()};
+    return Poco::Path(anime_path,"animehd").toString();
 }
 
 
@@ -155,6 +160,30 @@ string get_last_episode(const string &path) {
     return vec.back();
 }
 
+void initialize_config(const string &path) {
+    std::clog<<"Initializing config"<<endl;
+    Config config;
+
+    config.download_folder = "/home/v4mpc/Videos/testing2";
+//    check if download folder not exit create it
+
+    if (!path_exists(config.download_folder)){
+        std::clog<<config.download_folder<<" Does not exist. Creating...";
+        create_dir(config.download_folder);
+    }
+
+    if (!path_exists(path)){
+        std::clog<<path<<" Anime config folder Does not exist. Creating...";
+        create_dir(path);
+    }
+    auto anime_file_path=Poco::Path(path,"config.json").toString();
+    if(!path_exists(anime_file_path)){
+        std::clog<<path<<" Anime config.json file Does not exist. Creating..."<<std::endl;
+        Poco::File (anime_file_path);
+    }
+    save_config(anime_file_path, config);
+};
+
 void load_config(const string &path, Config &config) {
     Poco::Util::JSONConfiguration config_file;
     config_file.load(path);
@@ -174,4 +203,32 @@ void load_config(const string &path, Config &config) {
 
     }
 }
+
+void save_config(const string &path, Config &config) {
+
+    Poco::JSON::Object object;
+    Poco::JSON::Array arr;
+
+    for (int i = 0; i < config.animes.size(); ++i) {
+        Poco::JSON::Object arr_obj;
+        arr_obj.set("id", config.animes[i].id);
+        arr_obj.set("name", config.animes[i].name);
+        arr_obj.set("url", config.animes[i].url);
+        arr_obj.set("start_at", config.animes[i].start_at);
+        arr.add(arr_obj);
+    }
+    Poco::Dynamic::Var value;
+    value = config.download_folder;
+    object.set("download_folder", value);
+    object.set("animes", arr);
+    ofstream out_file;
+    out_file.open(path);
+    if (!out_file.is_open())
+        throw "Could not open file for write";
+    object.stringify(out_file);
+    out_file.close();
+
+
+};
+
 
