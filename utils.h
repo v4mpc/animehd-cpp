@@ -8,8 +8,19 @@
 #include "Poco/RegularExpression.h"
 #include <algorithm>
 #include <vector>
-
 #include "Poco/Logger.h"
+#include <Poco/Exception.h>
+#include <Poco/Net/HTTPSClientSession.h>
+#include <Poco/Net/HTTPRequest.h>
+#include <Poco/Net/HTTPResponse.h>
+#include "Poco/JSON/Object.h"
+#include "Poco/JSON/Array.h"
+#include "Poco/Util/JSONConfiguration.h"
+#include "Poco/JSON/Parser.h"
+#include "Poco/Dynamic/Var.h"
+#include <fstream>
+#include <gtkmm.h>
+
 
 
 using namespace std;
@@ -72,6 +83,13 @@ void load_config(const string &path, Config &config);
 void save_config(const string &path, Config &config);
 
 void initialize_config(const string &path);
+
+
+bool create_dir(const string &path);
+
+bool file_exists(const string &path,const string &file_name);
+
+bool dir_exists(const string &path);
 
 
 

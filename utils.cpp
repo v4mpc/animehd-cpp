@@ -3,20 +3,6 @@
 //
 
 #include "utils.h"
-#include <gtkmm.h>
-#include <Poco/Exception.h>
-#include <Poco/Net/HTTPSClientSession.h>
-#include <Poco/Net/HTTPRequest.h>
-#include <Poco/Net/HTTPResponse.h>
-#include "Poco/JSON/Object.h"
-#include "Poco/JSON/Array.h"
-#include "Poco/Util/JSONConfiguration.h"
-#include "Poco/JSON/Parser.h"
-#include "Poco/Dynamic/Var.h"
-#include <fstream>
-
-
-
 
 using namespace Poco;
 using namespace std;
@@ -25,7 +11,8 @@ using namespace std;
 
 
 bool path_exists(const string &path) {
-    return Glib::file_test(path, Glib::FileTest::FILE_TEST_EXISTS);
+    Poco::File path_string{path};
+    return path_string.exists();
 }
 
 
@@ -102,7 +89,6 @@ string generate_episode_name(string &url) {
     if (is_number(vec2[1]))
         return vec[1] + "_" + vec2[1] + vec2[2];
     return vec[2];
-
 };
 
 
@@ -135,7 +121,6 @@ std::vector<string> generate_host_uri(string url) {
         throw "Name_Not_Found";
     re1.split(url, 0, vec);
     return vec;
-
 }
 
 int kb(const int &byt) {
@@ -164,13 +149,11 @@ void initialize_config(const string &path) {
     Config config;
 
     config.download_folder = "/home/v4mpc/Videos/testing2";
-//    check if download folder not exit create it
-
+//    if download folder not exit create it
     if (!path_exists(config.download_folder)){
         std::clog<<config.download_folder<<" Does not exist. Creating..."<<std::endl;
         create_dir(config.download_folder);
     }
-
     if (!path_exists(path)){
         std::clog<<path<<" Anime config folder Does not exist. Creating..."<<std::endl;
         create_dir(path);
@@ -207,7 +190,6 @@ void save_config(const string &path, Config &config) {
 
     Poco::JSON::Object object;
     Poco::JSON::Array arr;
-
     for (int i = 0; i < config.animes.size(); ++i) {
         Poco::JSON::Object arr_obj;
         arr_obj.set("id", config.animes[i].id);
@@ -226,8 +208,6 @@ void save_config(const string &path, Config &config) {
         throw "Could not open file for write";
     object.stringify(out_file);
     out_file.close();
-
-
 };
 
 

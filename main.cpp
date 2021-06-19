@@ -1,9 +1,6 @@
 
 #include <iostream>
 #include "MainWindow.h"
-#include <map>
-
-#include <algorithm>
 #include "utils.h"
 
 
@@ -17,6 +14,9 @@ int main(int argc, char *argv[]) {
     auto config_path = get_anime_path();
     initialize_config(config_path);
 
+
+
+//    std::cout<<path_exists("/home/v4mpc/Videos/testing")<<std::endl;
 //    Config config;
 //
 //    load_config("../../config.json.bak",config);
