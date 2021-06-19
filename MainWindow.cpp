@@ -36,6 +36,12 @@ int MainWindow::init(int argc, char **argv) {
     refBuilder->get_widget("main_window", pWindow);
     refBuilder->get_widget("properties_dialog", pProperties_dialog);
     refBuilder->get_widget("anime_list_tree_view", pAnime_list_tree_view);
+    Glib::RefPtr<Gtk::TreeSelection> refAnime_list_tree_view_Selection =
+            pAnime_list_tree_view->get_selection();
+
+    refAnime_list_tree_view_Selection->signal_changed().connect(
+            sigc::mem_fun(*this, &MainWindow::on_anime_list_view_selection_changed)
+    );
 
     pProperties_dialog->set_transient_for(*pWindow);
     pProperties_dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
@@ -60,8 +66,6 @@ int MainWindow::init(int argc, char **argv) {
         row[m_Columns.m_col_id] = config.animes[i].id;
         row[m_Columns.m_col_name] = config.animes[i].name;
         row[m_Columns.m_col_start_at] = config.animes[i].start_at;
-
-
     }
 
 
@@ -80,6 +84,9 @@ int MainWindow::init(int argc, char **argv) {
     return 1;
 }
 
+void MainWindow::on_anime_list_view_selection_changed(){
+    std::cout<<"selection changed"<<std::endl;
+}
 
 void MainWindow::on_properties_button_clicked() {
     std::cout << "Properties button clicked" << std::endl;
