@@ -6,9 +6,7 @@
 #include "Poco/Path.h"
 #include "Poco/File.h"
 #include "Poco/RegularExpression.h"
-#include <algorithm>
 #include <vector>
-#include "Poco/Logger.h"
 #include <Poco/Exception.h>
 #include <Poco/Net/HTTPSClientSession.h>
 #include <Poco/Net/HTTPRequest.h>
@@ -19,7 +17,7 @@
 #include "Poco/JSON/Parser.h"
 #include "Poco/Dynamic/Var.h"
 #include <fstream>
-#include <gtkmm.h>
+
 
 
 

@@ -1,12 +1,10 @@
 
 #include <iostream>
+#include <gtkmm/stock.h>
 #include "MainWindow.h"
-#include <Poco/JSON/JSON.h>
-#include <Poco/JSON/Parser.h>
-#include <Poco/Dynamic/Var.h>
 
 //TODO: default download folder should be home/Videos/Animes
-using namespace Poco::JSON;
+
 
 MainWindow::MainWindow() {
     std::clog << "Main Window created!" << std::endl;
@@ -35,7 +33,12 @@ int MainWindow::init(int argc, char **argv) {
     connect_all_signals();
     setup_anime_popover();
     refBuilder->get_widget("main_window", pWindow);
-//    pWindow->show_all();
+    refBuilder->get_widget("properties_dialog",pProperties_dialog);
+    pProperties_dialog->set_transient_for(*pWindow);
+    pProperties_dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+
+//    pProperties_dialog->hide();
+    //    pWindow->show_all();
     Gtk::Main::run(*pWindow);
 
     return 1;
@@ -45,16 +48,28 @@ int MainWindow::init(int argc, char **argv) {
 
 void MainWindow::on_properties_button_clicked() {
     std::cout << "Properties button clicked" << std::endl;
-    std::cout<<"User config dir is "<< Glib::get_user_config_dir()<<std::endl;
-    std::string json = "{ \"test\" : { \"property\" : \"value\" } }";
-    Parser parser;
-    Poco::Dynamic::Var result = parser.parse(json);
-    Object::Ptr object = result.extract<Object::Ptr>();
-    Poco::Dynamic::Var test = object->get("test");
-    object = test.extract<Object::Ptr>();
-    test = object->get("property");
-    std::string value = test.convert<std::string>();
-    std::cout<<value<<std::endl;
+    int result = pProperties_dialog->run();
+    //Handle the response:
+    switch(result)
+    {
+        case(Gtk::RESPONSE_OK):
+        {
+            std::cout << "OK clicked." << std::endl;
+            break;
+        }
+        case(Gtk::RESPONSE_CANCEL):
+        {
+            std::cout << "Cancel clicked." << std::endl;
+            break;
+        }
+        default:
+        {
+            pProperties_dialog->hide();
+            std::cout << "Unexpected button clicked." << std::endl;
+            break;
+        }
+    }
+
 }
 
 void MainWindow::connect_all_signals(){

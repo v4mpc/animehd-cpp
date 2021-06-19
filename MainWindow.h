@@ -1,8 +1,16 @@
 
 #ifndef ANIMEHD_MAINWINDOW_H
 #define ANIMEHD_MAINWINDOW_H
+#include <gtkmm/button.h>
+#include <gtkmm/applicationwindow.h>
+#include <gtkmm/menubutton.h>
+#include <gtkmm/main.h>
+#include<gtkmm/builder.h>
+#include <gtkmm/box.h>
+#include <gtkmm/modelbutton.h>
+#include <glibmm/fileutils.h>
+#include <gtkmm/dialog.h>
 
-#include <gtkmm.h>
 
 
 class MainWindow {
@@ -13,6 +21,7 @@ public:
     Gtk::Button *pPlay_button=nullptr;
     Gtk::Button *pStop_button=nullptr;
     Gtk::MenuButton *pAnime_pop_over_button=nullptr;
+    Gtk::Dialog *pProperties_dialog=nullptr;
 //    Gtk::Popover *Anime_pop_over= nullptr;
 public:
     MainWindow();
