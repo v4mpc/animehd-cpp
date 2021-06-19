@@ -13,10 +13,13 @@
 //#include <gtkmm/liststore.h>
 #include <gtkmm.h>
 #include "utils.h"
+#include "ModelColumn.h"
 
 
 class MainWindow {
 public:
+    MainWindow(MainWindow const &window);
+
     Glib::RefPtr<Gtk::Builder> refBuilder;
     Gtk::ApplicationWindow *pWindow = nullptr;
     Gtk::Button *pProperties_button = nullptr;
@@ -25,9 +28,15 @@ public:
     Gtk::MenuButton *pAnime_pop_over_button = nullptr;
     Gtk::Dialog *pProperties_dialog = nullptr;
     Gtk::TreeView *pAnime_list_tree_view = nullptr;
+    Glib::RefPtr<Gtk::TreeSelection> refAnime_list_tree_view_Selection;
+    Gtk::Entry *pId_entry=nullptr;
+    Gtk::Entry *pUrl_entry=nullptr;
+    Gtk::Entry *pStart_at=nullptr;
+
 //    Gtk::Popover *Anime_pop_over= nullptr;
 public:
     MainWindow();
+
 
     ~MainWindow();
 
@@ -47,24 +56,15 @@ public:
 
     void on_anime_selected(const Glib::ustring &data);
 
+    ModelColumns m_Columns;
+
+    void on_url_entry_changed();
+    void on_start_at_entry_changed();
+
 
 };
 
 
-class ModelColumns : public Gtk::TreeModelColumnRecord {
-public:
-
-    ModelColumns() {
-        add(m_col_id);
-        add(m_col_name);
-        add(m_col_start_at);
-    }
-
-    Gtk::TreeModelColumn<Glib::ustring> m_col_id;
-    Gtk::TreeModelColumn<Glib::ustring> m_col_name;
-    Gtk::TreeModelColumn<Glib::ustring> m_col_start_at;
-
-};
 
 
 #endif //ANIMEHD_MAINWINDOW_H

@@ -7,7 +7,7 @@ link_directories(${GTKMM_LIBRARY_DIRS})
 include_directories(${GTKMM_INCLUDE_DIRS})
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
-add_executable(animehd main.cpp MainWindow.cpp MainWindow.h utils.cpp utils.h)
+add_executable(animehd main.cpp MainWindow.cpp MainWindow.h utils.cpp utils.h ModelColumn.cpp ModelColumn.h)
 target_link_libraries(animehd ${GTKMM_LIBRARIES} ${CONAN_LIBS})
 
 
