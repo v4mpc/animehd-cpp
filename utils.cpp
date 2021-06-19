@@ -17,8 +17,10 @@ bool path_exists(const string &path) {
 
 
 string get_config_path() {
-    return Path::configHome();
+    Poco::Path anime_path{get_anime_path(),"config.json"};
+    return anime_path.toString();
 }
+
 
 
 string get_anime_path() {
@@ -160,14 +162,16 @@ void initialize_config(const string &path) {
     }
     auto anime_file_path=Poco::Path(path,"config.json").toString();
     if(!path_exists(anime_file_path)){
+        auto file_path=anime_file_path;
         std::clog<<path<<" Anime config.json file Does not exist. Creating..."<<std::endl;
         Poco::File (anime_file_path);
+        save_config(file_path, config);
     }
-    save_config(anime_file_path, config);
 };
 
 void load_config(const string &path, Config &config) {
     Poco::Util::JSONConfiguration config_file;
+    std::cout<<path<<std::endl;
     config_file.load(path);
     config.download_folder = config_file.getString("download_folder");
     std::string animes = config_file.getString("animes");
