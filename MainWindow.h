@@ -19,7 +19,7 @@
 class MainWindow {
 public:
     MainWindow(MainWindow const &window);
-
+    Config config;
     Glib::RefPtr<Gtk::Builder> refBuilder;
     Gtk::ApplicationWindow *pWindow = nullptr;
     Gtk::Button *pProperties_button = nullptr;
@@ -31,7 +31,7 @@ public:
     Glib::RefPtr<Gtk::TreeSelection> refAnime_list_tree_view_Selection;
     Gtk::Entry *pId_entry=nullptr;
     Gtk::Entry *pUrl_entry=nullptr;
-    Gtk::Entry *pStart_at=nullptr;
+    Gtk::Entry *pStart_at_entry=nullptr;
 
 //    Gtk::Popover *Anime_pop_over= nullptr;
 public:

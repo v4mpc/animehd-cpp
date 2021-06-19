@@ -62,6 +62,7 @@ string generate_anime_name(const string &url) {
     if (posVec[1].length < 0)
         throw "Name_Not_Found";
     re1.split(url, 0, vec);
+    std::cout<<vec[1]<<std::endl;
     return vec[1];
 }
 

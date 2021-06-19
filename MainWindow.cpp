@@ -31,6 +31,11 @@ int MainWindow::init(int argc, char **argv) {
         std::cerr << "BuilderError: " << ex.what() << std::endl;
         return 1;
     }
+
+    auto config_path = get_config_path();
+    auto config_dir_path = get_anime_path();
+    initialize_config(config_dir_path);
+    load_config(config_path, config);
     connect_all_signals();
     setup_anime_popover();
     refBuilder->get_widget("main_window", pWindow);
@@ -49,15 +54,12 @@ int MainWindow::init(int argc, char **argv) {
     Glib::RefPtr<Gtk::ListStore> refListStore = Gtk::ListStore::create(m_Columns);
     pAnime_list_tree_view->set_model(refListStore);
     pAnime_list_tree_view->append_column("Id", m_Columns.m_col_id);
-    pAnime_list_tree_view->append_column("Name", m_Columns.m_col_name);
-    pAnime_list_tree_view->append_column("start at", m_Columns.m_col_start_at);
+    pAnime_list_tree_view->append_column_editable("Name", m_Columns.m_col_name);
+    pAnime_list_tree_view->append_column_editable("start at", m_Columns.m_col_start_at);
 
 
-    Config config;
-    auto config_path = get_config_path();
-    auto config_dir_path = get_anime_path();
-    initialize_config(config_dir_path);
-    load_config(config_path, config);
+
+
 
 
     for (int i = 0; i < config.animes.size(); ++i) {
@@ -94,9 +96,9 @@ void MainWindow::on_anime_list_view_selection_changed() {
         //Do something with the row.
         pId_entry->set_text(row[m_Columns.m_col_id]);
         pUrl_entry->set_text(row[m_Columns.m_col_url]);
-        pStart_at->set_text(row[m_Columns.m_col_start_at]);
+        pStart_at_entry->set_text(row[m_Columns.m_col_start_at]);
 
-        std::cout<<"row selected"<<std::endl;
+        std::cout << "row selected" << std::endl;
     }
 }
 
@@ -129,12 +131,12 @@ void MainWindow::connect_all_signals() {
     refBuilder->get_widget("play_button", pPlay_button);
     pPlay_button->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_play_button_clicked));
     refBuilder->get_widget("stop_button", pStop_button);
-    refBuilder->get_widget("id_entry",pId_entry);
-    refBuilder->get_widget("url_entry",pUrl_entry);
-    refBuilder->get_widget("start_at_entry",pStart_at);
+    refBuilder->get_widget("id_entry", pId_entry);
+    refBuilder->get_widget("url_entry", pUrl_entry);
+    refBuilder->get_widget("start_at_entry", pStart_at_entry);
     pStop_button->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_stop_button_clicked));
-    pUrl_entry->signal_changed().connect(sigc::mem_fun(this,&MainWindow::on_url_entry_changed));
-    pStart_at->signal_changed().connect(sigc::mem_fun(this,&MainWindow::on_start_at_entry_changed));
+    pUrl_entry->signal_changed().connect(sigc::mem_fun(this, &MainWindow::on_url_entry_changed));
+    pStart_at_entry->signal_changed().connect(sigc::mem_fun(this, &MainWindow::on_start_at_entry_changed));
 }
 
 
@@ -152,10 +154,13 @@ void MainWindow::on_stop_button_clicked() {
 void MainWindow::setup_anime_popover() {
     auto *pop_over = new Gtk::Popover();
     auto *vbox = new Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL);
-    auto *btn = new Gtk::ModelButton();
-    btn->set_label("nartuto");
-    btn->signal_clicked().connect(sigc::bind(sigc::mem_fun(this, &MainWindow::on_anime_selected), "naruto"));
-    vbox->pack_start(*btn, true, true, 1);
+    for (int i = 0; i < config.animes.size(); ++i) {
+        auto *btn = new Gtk::ModelButton();
+        btn->set_label(config.animes[i].name);
+        btn->signal_clicked().connect(sigc::bind(sigc::mem_fun(this, &MainWindow::on_anime_selected),config.animes[i].name ));
+        vbox->pack_start(*btn, true, true, 1);
+    }
+
     vbox->show_all();
     pop_over->add(*vbox);
     pop_over->set_position(Gtk::POS_BOTTOM);
@@ -170,11 +175,47 @@ void MainWindow::on_anime_selected(const Glib::ustring &data) {
 }
 
 void MainWindow::on_url_entry_changed() {
-    std::cout<<"Url changed"<<std::endl;
+    std::cout << "Url changed" << std::endl;
+    auto url = pUrl_entry->get_text();
+    if (url.empty()) {
+        std::cout << "No text" << std::endl;
+        return;
+    }
+    Gtk::TreeModel::iterator iter = refAnime_list_tree_view_Selection->get_selected();
+    if (iter) //If anything is selected
+    {
+        std::cout << "setting row" << std::endl;
+        Gtk::TreeModel::Row row = *iter;
+        row[m_Columns.m_col_name] = static_cast<Glib::ustring>(generate_anime_name(url));
+        row[m_Columns.m_col_url] = url;
+    }
+
+
 }
 
 void MainWindow::on_start_at_entry_changed() {
-    std::cout<<"Start at changed"<<std::endl;
+    std::cout << "Start at changed" << std::endl;
+    std::cout << "Url changed" << std::endl;
+    auto start_at = pStart_at_entry->get_text();
+    if (start_at.empty()) {
+        std::cout << "No text" << std::endl;
+        return;
+    }
+    Gtk::TreeModel::iterator iter = refAnime_list_tree_view_Selection->get_selected();
+    if (iter) //If anything is selected
+    {
+        std::cout << "setting row" << std::endl;
+        Gtk::TreeModel::Row row = *iter;
+        row[m_Columns.m_col_start_at] = start_at;
+//        TODO::should dispatch a thread to go add write the io so as to not block ui whe animes scale
+//when write is complete should emit a signal
+        for (int i = 0; i < config.animes.size(); ++i) {
+            if (config.animes[i].id==row[m_Columns.m_col_id]){
+                std::cout<<"found the id"<<std::endl;
+            }
+        }
+
+    }
 }
 
 MainWindow::MainWindow(MainWindow const &window) {
