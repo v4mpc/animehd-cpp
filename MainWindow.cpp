@@ -72,16 +72,6 @@ int MainWindow::init(int argc, char **argv) {
     }
 
 
-
-//    setup the anime list view here from file
-
-
-
-
-
-
-
-
     Gtk::Main::run(*pWindow);
 
     return 1;
@@ -165,9 +155,10 @@ void MainWindow::connect_all_signals() {
 
 void MainWindow::on_add_anime_button_clicked(){
     std::cout<<"add anime button clicked"<<std::endl;
+    auto anime_size=refListStore->children().size();
     Gtk::TreeModel::iterator iter = refListStore->append();
     Gtk::TreeModel::Row row = *iter;
-    auto anime_size=config.animes.size();
+
     ++anime_size;
     row[m_Columns.m_col_id] =static_cast<Glib::ustring>(to_string(anime_size));
     row[m_Columns.m_col_name] ="Null" ;
