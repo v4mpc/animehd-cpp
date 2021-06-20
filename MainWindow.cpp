@@ -113,20 +113,38 @@ void MainWindow::on_properties_button_clicked() {
             typedef Gtk::TreeModel::Children type_children; //minimise code length.
             type_children children = refListStore->children();
             config.animes.clear();
+//            TODO::try to optimize to many for loops
+            vector<type_children::iterator> to_remove;
             for(type_children::iterator iter = children.begin();
                 iter != children.end(); ++iter)
             {
                 Gtk::TreeModel::Row row = *iter;
-                        ConfigAnime new_anime;
-                        new_anime.id=static_cast<Glib::ustring>(row[m_Columns.m_col_id]);
-                        new_anime.name=static_cast<Glib::ustring>(row[m_Columns.m_col_name]);
-                        new_anime.url= static_cast<Glib::ustring>(row[m_Columns.m_col_url])  ;
-                        new_anime.start_at= static_cast<Glib::ustring>(row[m_Columns.m_col_start_at]);
-                        config.animes.push_back(new_anime);
+                if(row[m_Columns.m_col_name]=="Null"){
+//                    refListStore->erase(iter);
+                    std::cout<<"its null anime"<<std::endl;
+                    to_remove.push_back(iter);
+                }
+            }
+
+            for (int i = 0; i < to_remove.size(); ++i) {
+                refListStore->erase(to_remove[i]);
+            }
+            type_children children_new = refListStore->children();
+            for(type_children::iterator iter = children_new.begin();
+                iter != children_new.end(); ++iter)
+            {
+                Gtk::TreeModel::Row row = *iter;
+                ConfigAnime new_anime;
+                new_anime.id=static_cast<Glib::ustring>(row[m_Columns.m_col_id]);
+                new_anime.name=static_cast<Glib::ustring>(row[m_Columns.m_col_name]);
+                new_anime.url= static_cast<Glib::ustring>(row[m_Columns.m_col_url])  ;
+                new_anime.start_at= static_cast<Glib::ustring>(row[m_Columns.m_col_start_at]);
+                config.animes.push_back(new_anime);
             }
             auto config_path = get_config_path();
             std::cout<<"Saving config"<<std::endl;
             save_config(config_path,config);
+            setup_anime_popover();
             break;
         }
     }
@@ -189,6 +207,7 @@ void MainWindow::on_stop_button_clicked() {
 }
 
 void MainWindow::setup_anime_popover() {
+//    make all pointers here as smart Pointers
     auto *pop_over = new Gtk::Popover();
     auto *vbox = new Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL);
     for (int i = 0; i < config.animes.size(); ++i) {

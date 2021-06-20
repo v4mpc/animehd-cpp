@@ -14,6 +14,8 @@
 #include <gtkmm.h>
 #include "utils.h"
 #include "ModelColumn.h"
+#include <memory>
+
 
 
 class MainWindow {
