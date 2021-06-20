@@ -97,9 +97,11 @@ void MainWindow::on_anime_list_view_selection_changed() {
         pId_entry->set_text(row[m_Columns.m_col_id]);
         pUrl_entry->set_text(row[m_Columns.m_col_url]);
         pStart_at_entry->set_text(row[m_Columns.m_col_start_at]);
-
-        std::cout << "row selected" << std::endl;
+        pAnime_form->show();
+    } else{
+        pAnime_form->hide();
     }
+
 }
 
 void MainWindow::on_properties_button_clicked() {
@@ -131,9 +133,17 @@ void MainWindow::on_properties_button_clicked() {
                         config.animes[i].start_at= static_cast<Glib::ustring>(row[m_Columns.m_col_start_at]) ;
                         break;
                     }
+                        ConfigAnime new_anime;
+                        new_anime.id=static_cast<Glib::ustring>(row[m_Columns.m_col_id]);
+                        new_anime.name=static_cast<Glib::ustring>(row[m_Columns.m_col_name]);
+                        new_anime.url= static_cast<Glib::ustring>(row[m_Columns.m_col_url])  ;
+                        new_anime.start_at= static_cast<Glib::ustring>(row[m_Columns.m_col_start_at]);
+                        config.animes.push_back(new_anime);
+
                 }
             }
             auto config_path = get_config_path();
+            std::cout<<"Saving config"<<std::endl;
             save_config(config_path,config);
             break;
         }
@@ -150,12 +160,39 @@ void MainWindow::connect_all_signals() {
     refBuilder->get_widget("stop_button", pStop_button);
     refBuilder->get_widget("id_entry", pId_entry);
     refBuilder->get_widget("url_entry", pUrl_entry);
+    refBuilder->get_widget("anime_form",pAnime_form);
     refBuilder->get_widget("start_at_entry", pStart_at_entry);
     pStop_button->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_stop_button_clicked));
     pUrl_entry->signal_changed().connect(sigc::mem_fun(this, &MainWindow::on_url_entry_changed));
     pStart_at_entry->signal_changed().connect(sigc::mem_fun(this, &MainWindow::on_start_at_entry_changed));
+    refBuilder->get_widget("add_anime_button",pAdd_anime_button);
+    pAdd_anime_button->signal_clicked().connect(sigc::mem_fun(this,&MainWindow::on_add_anime_button_clicked));
+    refBuilder->get_widget("remove_anime_button",pRemove_anime_button);
+    pRemove_anime_button->signal_clicked().connect(sigc::mem_fun(this,&MainWindow::on_remove_anime_button_clicked));
 }
 
+void MainWindow::on_add_anime_button_clicked(){
+    std::cout<<"add anime button clicked"<<std::endl;
+    Gtk::TreeModel::iterator iter = refListStore->append();
+    Gtk::TreeModel::Row row = *iter;
+    auto anime_size=config.animes.size();
+    ++anime_size;
+    row[m_Columns.m_col_id] =static_cast<Glib::ustring>(to_string(anime_size));
+    row[m_Columns.m_col_name] ="Null" ;
+    row[m_Columns.m_col_url] ="https://ot.manga47.net/Null/001.mp4" ;
+    row[m_Columns.m_col_start_at] = "1";
+    if(iter)
+        refAnime_list_tree_view_Selection->select(row);
+}
+
+void MainWindow::on_remove_anime_button_clicked(){
+    std::cout<<"remove anime button clicked"<<std::endl;
+    Gtk::TreeModel::iterator iter = refAnime_list_tree_view_Selection->get_selected();
+    if (iter) //If anything is selected
+    {
+        refListStore->erase(iter);
+    }
+}
 
 void MainWindow::on_play_button_clicked() {
     std::cout << "Play button clicked" << std::endl;

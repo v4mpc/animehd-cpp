@@ -33,6 +33,9 @@ public:
     Gtk::Entry *pUrl_entry=nullptr;
     Gtk::Entry *pStart_at_entry=nullptr;
     Glib::RefPtr<Gtk::ListStore> refListStore;
+    Gtk::Grid *pAnime_form=nullptr;
+    Gtk::Button *pAdd_anime_button= nullptr;
+    Gtk::Button *pRemove_anime_button=nullptr;
 
 //    Gtk::Popover *Anime_pop_over= nullptr;
 public:
@@ -61,6 +64,8 @@ public:
 
     void on_url_entry_changed();
     void on_start_at_entry_changed();
+    void on_add_anime_button_clicked();
+    void on_remove_anime_button_clicked();
 
 
 };
