@@ -51,7 +51,7 @@ int MainWindow::init(int argc, char **argv) {
     pProperties_dialog->set_transient_for(*pWindow);
     pProperties_dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 
-    Glib::RefPtr<Gtk::ListStore> refListStore = Gtk::ListStore::create(m_Columns);
+    refListStore = Gtk::ListStore::create(m_Columns);
     pAnime_list_tree_view->set_model(refListStore);
     pAnime_list_tree_view->append_column("Id", m_Columns.m_col_id);
     pAnime_list_tree_view->append_column_editable("Name", m_Columns.m_col_name);
@@ -118,6 +118,23 @@ void MainWindow::on_properties_button_clicked() {
         default: {
             pProperties_dialog->hide();
             std::cout << "Unexpected button clicked." << std::endl;
+            typedef Gtk::TreeModel::Children type_children; //minimise code length.
+            type_children children = refListStore->children();
+            for(type_children::iterator iter = children.begin();
+                iter != children.end(); ++iter)
+            {
+                Gtk::TreeModel::Row row = *iter;
+                for (int i = 0; i < config.animes.size(); ++i) {
+                    if (config.animes[i].id==row[m_Columns.m_col_id]){
+                        config.animes[i].name= static_cast<Glib::ustring>(row[m_Columns.m_col_name]);
+                        config.animes[i].url= static_cast<Glib::ustring>(row[m_Columns.m_col_url])  ;
+                        config.animes[i].start_at= static_cast<Glib::ustring>(row[m_Columns.m_col_start_at]) ;
+                        break;
+                    }
+                }
+            }
+            auto config_path = get_config_path();
+            save_config(config_path,config);
             break;
         }
     }

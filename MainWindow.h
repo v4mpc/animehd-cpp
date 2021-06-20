@@ -32,6 +32,7 @@ public:
     Gtk::Entry *pId_entry=nullptr;
     Gtk::Entry *pUrl_entry=nullptr;
     Gtk::Entry *pStart_at_entry=nullptr;
+    Glib::RefPtr<Gtk::ListStore> refListStore;
 
 //    Gtk::Popover *Anime_pop_over= nullptr;
 public:
