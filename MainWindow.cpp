@@ -122,25 +122,17 @@ void MainWindow::on_properties_button_clicked() {
             std::cout << "Unexpected button clicked." << std::endl;
             typedef Gtk::TreeModel::Children type_children; //minimise code length.
             type_children children = refListStore->children();
+            config.animes.clear();
             for(type_children::iterator iter = children.begin();
                 iter != children.end(); ++iter)
             {
                 Gtk::TreeModel::Row row = *iter;
-                for (int i = 0; i < config.animes.size(); ++i) {
-                    if (config.animes[i].id==row[m_Columns.m_col_id]){
-                        config.animes[i].name= static_cast<Glib::ustring>(row[m_Columns.m_col_name]);
-                        config.animes[i].url= static_cast<Glib::ustring>(row[m_Columns.m_col_url])  ;
-                        config.animes[i].start_at= static_cast<Glib::ustring>(row[m_Columns.m_col_start_at]) ;
-                        break;
-                    }
                         ConfigAnime new_anime;
                         new_anime.id=static_cast<Glib::ustring>(row[m_Columns.m_col_id]);
                         new_anime.name=static_cast<Glib::ustring>(row[m_Columns.m_col_name]);
                         new_anime.url= static_cast<Glib::ustring>(row[m_Columns.m_col_url])  ;
                         new_anime.start_at= static_cast<Glib::ustring>(row[m_Columns.m_col_start_at]);
                         config.animes.push_back(new_anime);
-
-                }
             }
             auto config_path = get_config_path();
             std::cout<<"Saving config"<<std::endl;
