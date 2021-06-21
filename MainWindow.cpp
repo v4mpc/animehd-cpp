@@ -40,25 +40,60 @@ int MainWindow::init(int argc, char **argv) {
     setup_anime_popover();
     refBuilder->get_widget("main_window", pWindow);
     refBuilder->get_widget("properties_dialog", pProperties_dialog);
-
     refBuilder->get_widget("anime_list_tree_view", pAnime_list_tree_view);
-    refAnime_list_tree_view_Selection = pAnime_list_tree_view->get_selection();
-
-    refAnime_list_tree_view_Selection->signal_changed().connect(
-            sigc::mem_fun(*this, &MainWindow::on_anime_list_view_selection_changed)
-    );
-
-    pProperties_dialog->set_transient_for(*pWindow);
-    pProperties_dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-
     refListStore = Gtk::ListStore::create(m_Columns);
     pAnime_list_tree_view->set_model(refListStore);
     pAnime_list_tree_view->append_column("Id", m_Columns.m_col_id);
     pAnime_list_tree_view->append_column_editable("Name", m_Columns.m_col_name);
     pAnime_list_tree_view->append_column_editable("start at", m_Columns.m_col_start_at);
+    refAnime_list_tree_view_Selection = pAnime_list_tree_view->get_selection();
+    refAnime_list_tree_view_Selection->signal_changed().connect(
+            sigc::mem_fun(*this, &MainWindow::on_anime_list_view_selection_changed)
+    );
+    pProperties_dialog->set_transient_for(*pWindow);
+    pProperties_dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 
+    refBuilder->get_widget("tree_view",pDownloads_list_tree_view);
 
+    pTree_view_modal_columns.add(tvm_col_id);
+    pTree_view_modal_columns.add(tvm_col_name);
+    pTree_view_modal_columns.add(tvm_col_progress);
+    pTree_view_modal_columns.add(tvm_col_downloaded);
+    pTree_view_modal_columns.add(tvm_col_speed);
+    pTree_view_modal_columns.add(tvm_col_status);
+    refDownloadsListStore=Gtk::ListStore::create(pTree_view_modal_columns);
 
+    pDownloads_list_tree_view->set_model(refDownloadsListStore);
+
+    pDownloads_list_tree_view->append_column("Id",tvm_col_id);
+    pDownloads_list_tree_view->append_column("Name",tvm_col_name);
+    auto cell = Gtk::make_managed<Gtk::CellRendererProgress>();
+    pDownloads_list_tree_view->append_column("Progress", *cell);
+    auto pColumn =pDownloads_list_tree_view->get_column(2);
+    if(pColumn)
+    {
+        pColumn->add_attribute(cell->property_value(), tvm_col_progress);
+    }
+//    pDownloads_list_tree_view->append_column("progress",tvm_col_progress);
+    pDownloads_list_tree_view->append_column("Downloaded",tvm_col_downloaded);
+    pDownloads_list_tree_view->append_column("Speed",tvm_col_speed);
+    pDownloads_list_tree_view->append_column("Status",tvm_col_status);
+    auto name_column=pDownloads_list_tree_view->get_column(1);
+    name_column->set_fixed_width(200);
+    auto download_column=pDownloads_list_tree_view->get_column(3);
+    download_column->set_fixed_width(100);
+
+    auto progress_column=pDownloads_list_tree_view->get_column(2);
+    progress_column->set_fixed_width(120);
+
+    //Fill the TreeView's model
+    auto row = *(refDownloadsListStore->append());
+    row[tvm_col_id] = "90";
+    row[tvm_col_name] = "Dr_Stone_Stone_Wars_Dub_999.mp4";
+    row[tvm_col_progress] = 100;
+    row[tvm_col_downloaded] = "900MB of 900MB";
+    row[tvm_col_speed] = "249Mbps";
+    row[tvm_col_status] = "FETCHING META";
 
 
 
@@ -70,6 +105,7 @@ int MainWindow::init(int argc, char **argv) {
         row[m_Columns.m_col_url] = config.animes[i].url;
         row[m_Columns.m_col_start_at] = config.animes[i].start_at;
     }
+
 
 
     Gtk::Main::run(*pWindow);
@@ -152,7 +188,6 @@ void MainWindow::on_properties_button_clicked() {
 }
 
 void MainWindow::connect_all_signals() {
-
     refBuilder->get_widget("properties_button", pProperties_button);
     pProperties_button->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_properties_button_clicked));
     refBuilder->get_widget("play_button", pPlay_button);
@@ -197,17 +232,15 @@ void MainWindow::on_remove_anime_button_clicked(){
 
 void MainWindow::on_play_button_clicked() {
     std::cout << "Play button clicked" << std::endl;
-
 }
 
 
 void MainWindow::on_stop_button_clicked() {
     std::cout << "Play stop clicked" << std::endl;
-
 }
 
 void MainWindow::setup_anime_popover() {
-//    make all pointers here as smart Pointers
+//   TODO:: make all pointers here as smart Pointers
     auto *pop_over = new Gtk::Popover();
     auto *vbox = new Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL);
     for (int i = 0; i < config.animes.size(); ++i) {
@@ -216,7 +249,6 @@ void MainWindow::setup_anime_popover() {
         btn->signal_clicked().connect(sigc::bind(sigc::mem_fun(this, &MainWindow::on_anime_selected),config.animes[i].name ));
         vbox->pack_start(*btn, true, true, 1);
     }
-
     vbox->show_all();
     pop_over->add(*vbox);
     pop_over->set_position(Gtk::POS_BOTTOM);
@@ -245,8 +277,6 @@ void MainWindow::on_url_entry_changed() {
         row[m_Columns.m_col_name] = static_cast<Glib::ustring>(generate_anime_name(url));
         row[m_Columns.m_col_url] = url;
     }
-
-
 }
 
 void MainWindow::on_start_at_entry_changed() {

@@ -30,14 +30,28 @@ public:
     Gtk::MenuButton *pAnime_pop_over_button = nullptr;
     Gtk::Dialog *pProperties_dialog = nullptr;
     Gtk::TreeView *pAnime_list_tree_view = nullptr;
+    Gtk::TreeView *pDownloads_list_tree_view=nullptr;
     Glib::RefPtr<Gtk::TreeSelection> refAnime_list_tree_view_Selection;
     Gtk::Entry *pId_entry=nullptr;
     Gtk::Entry *pUrl_entry=nullptr;
     Gtk::Entry *pStart_at_entry=nullptr;
     Glib::RefPtr<Gtk::ListStore> refListStore;
+    Glib::RefPtr<Gtk::ListStore> refDownloadsListStore;
+
     Gtk::Grid *pAnime_form=nullptr;
     Gtk::Button *pAdd_anime_button= nullptr;
     Gtk::Button *pRemove_anime_button=nullptr;
+    Gtk::TreeModelColumnRecord pTree_view_modal_columns;
+
+    Gtk::TreeModelColumn<Glib::ustring> tvm_col_id;
+    Gtk::TreeModelColumn<Glib::ustring> tvm_col_name;
+    Gtk::TreeModelColumn<int> tvm_col_progress;
+    Gtk::TreeModelColumn<Glib::ustring> tvm_col_downloaded;
+    Gtk::TreeModelColumn<Glib::ustring> tvm_col_speed;
+    Gtk::TreeModelColumn<Glib::ustring> tvm_col_status;
+
+
+
 
 //    Gtk::Popover *Anime_pop_over= nullptr;
 public:
